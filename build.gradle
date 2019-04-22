@@ -1,0 +1,41 @@
+plugins {
+    // Apply the java plugin to add support for Java
+    id 'java'    
+    id 'eclipse'
+}
+
+repositories {
+    // Use jcenter for resolving your dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/org.apache.kafka/kafka
+    //compile group: 'org.apache.kafka', name: 'kafka_2.10', version: '0.8.0'
+    compile 'org.apache.kafka:kafka-clients:0.10.2.0'
+    compile 'ch.qos.logback:logback-classic:1.2.2'
+}
+
+//configurations.all {
+//    exclude group: 'com.sun.jdmk', module: 'jmxtools'
+//    exclude group: 'com.sun.jmx', module: 'jmxri'
+//}
+
+// Include dependent libraries in archive.
+jar {
+  manifest { 
+    //attributes "Main-Class": "Sample"
+    attributes "Main-Class": "com.example.kafkademo.main.KafkaDemoMain"
+  }  
+
+  from {
+    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+  }
+}
+
+task getDeps(type: Copy) {
+  from sourceSets.main.runtimeClasspath
+  into 'runtime/'
+}
